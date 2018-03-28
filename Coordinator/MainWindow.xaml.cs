@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,18 +18,33 @@ using Microsoft.Kinect;
 
 namespace Coordinator
 {
-    /// <summary>
-    /// MainWindow.xaml에 대한 상호 작용 논리
-    /// </summary>
     public partial class MainWindow : Window
 
     {
+        //Variables
+        KinectSensor sensor; 
+        DepthFrameReader depthReader;
+        BodyFrameReader bodyReader;
+        IList<Body> bodies;
+
+
+        //For using console windows
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
+
+        
+
+        //Main windows Initialize
         public MainWindow()
         {
+
+            AllocConsole();
             InitializeComponent();
             this.Loaded += OnLoaded;
         }
 
+        //Depth Image Process Frame
         private ImageSource ProcessFrame(DepthFrame frame)
         {
             int width = frame.FrameDescription.Width;
@@ -53,30 +70,101 @@ namespace Coordinator
             return BitmapSource.Create(width, height, 96, 96, format, null, pixels, stride);
         }
 
-        KinectSensor sensor;
-        DepthFrameReader reader;
-
+        //Kinect sensor open & Depthreader, Bodyreader open
         void OnLoaded(object sender, RoutedEventArgs e)
         {
             this.sensor = KinectSensor.GetDefault();
             this.sensor.Open();
 
-            this.reader = this.sensor.DepthFrameSource.OpenReader();
-            this.reader.FrameArrived += OnFrameArrived;
+            this.depthReader = this.sensor.DepthFrameSource.OpenReader();
+            this.depthReader.FrameArrived += OnDepthFrameArrived;
+
+            this.bodyReader = this.sensor.BodyFrameSource.OpenReader();
+            this.bodyReader.FrameArrived += OnBodyFrameArrived;
+            
         }
 
-        void OnFrameArrived(object sender, DepthFrameArrivedEventArgs e)
+        //Close all readers
+        void CloseReader(object sender, RoutedEventArgs e)
+        {
+            this.depthReader.FrameArrived -= OnDepthFrameArrived;
+            this.depthReader.Dispose();
+            this.depthReader = null;
+
+            this.bodyReader.FrameArrived -= OnBodyFrameArrived;
+            this.bodyReader.Dispose();
+            this.bodyReader = null;
+
+
+        }
+        //release Kinect v2 Sensor
+        void ReleaseSensor()
+        {
+            this.sensor.Close();
+            this.sensor = null;
+        }
+
+        //Body Frame
+        void OnBodyFrameArrived(object sender, BodyFrameArrivedEventArgs e)
+        {
+            var frame = e.FrameReference.AcquireFrame();
+            
+            if (frame != null)
+                {
+                    bodies = new Body[frame.BodyFrameSource.BodyCount];
+
+                    frame.GetAndRefreshBodyData(bodies);
+
+                    foreach (var body in bodies)
+                    {
+                        if (bodies != null)
+                        {
+                            if (body.IsTracked)
+                            {
+                                Joint head = body.Joints[JointType.Head];
+
+                                float x = head.Position.X;
+                                float y = head.Position.Y;
+                                float z = head.Position.Z;
+
+                            // HeadPosition (x,y,z) to console
+                            System.Console.WriteLine("HeadPosition x : "+x);
+                            System.Console.WriteLine("HeadPosition y : "+y);
+                            System.Console.WriteLine("HeadPosition z : "+z);
+                             }
+                        }
+                    }
+                }
+            
+
+        }
+
+        //Depth Frame
+        void OnDepthFrameArrived(object sender, DepthFrameArrivedEventArgs e)
         {
             using (var frame = e.FrameReference.AcquireFrame())
             {
                 if (frame != null)
                 {
-                    camera.Source = ProcessFrame(frame);
+                    depthCamera.Source = ProcessFrame(frame);
                 }
             }
         }
-      
+
+        static Brush[] brushes =
+        {
+            Brushes.Green,
+            Brushes.Blue,
+            Brushes.Red,
+            Brushes.Orange,
+            Brushes.Purple,
+            Brushes.Yellow
+
+        };
+
     }
+
+    
         
 }
 

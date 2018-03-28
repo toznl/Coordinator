@@ -5,8 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Coordinator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Coordinator" Height="550" Width="450" Background="Black">
     <Grid>
-        <Image Name="camera" />
+        <Image Name="depthCamera" Width="400" Height="500"/>
+        <Image Name="bodyCamera" Width="400" Height="500"/>
+
+        <Canvas Background="Transparent"/>
     </Grid>
 </Window>

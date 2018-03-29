@@ -8,8 +8,7 @@
         Title="Coordinator" Height="550" Width="450" Background="Black">
     <Grid>
         <Image Name="depthCamera" Width="400" Height="500"/>
-        <Image Name="bodyCamera" Width="400" Height="500"/>
-
-        <Canvas Background="Transparent"/>
+        <Canvas Name="canvas" Width="400" Height="500"/>
+        
     </Grid>
 </Window>

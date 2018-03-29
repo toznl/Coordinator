@@ -111,9 +111,11 @@ namespace Coordinator
             
             if (frame != null)
                 {
-                    bodies = new Body[frame.BodyFrameSource.BodyCount];
 
-                    frame.GetAndRefreshBodyData(bodies);
+                canvas.Children.Clear();
+                bodies = new Body[frame.BodyFrameSource.BodyCount];
+
+                frame.GetAndRefreshBodyData(bodies);
 
                     foreach (var body in bodies)
                     {
@@ -121,23 +123,294 @@ namespace Coordinator
                         {
                             if (body.IsTracked)
                             {
-                                Joint head = body.Joints[JointType.Head];
 
-                                float x = head.Position.X;
-                                float y = head.Position.Y;
-                                float z = head.Position.Z;
+                            //Head
 
-                            // HeadPosition (x,y,z) to console
-                            System.Console.WriteLine("HeadPosition x : "+x);
-                            System.Console.WriteLine("HeadPosition y : "+y);
-                            System.Console.WriteLine("HeadPosition z : "+z);
-                             }
+                            Joint head = body.Joints[JointType.Head];
+                            DepthSpacePoint realJointHead = sensor.CoordinateMapper.MapCameraPointToDepthSpace(head.Position);
+                            float headX = realJointHead.X;
+                            float headY = realJointHead.Y;
+                            float headZ = head.Position.Z;
+
+                            Ellipse drawHead = new Ellipse
+                            {
+                                Fill = Brushes.Red,
+                                Width = 20,
+                                Height = 20
+                            };
+
+                            Canvas.SetLeft(drawHead, headX - drawHead.Width / 2);
+                            Canvas.SetTop(drawHead, headY - drawHead.Height / 2);
+                            canvas.Children.Add(drawHead);
+                            
+                            //Neck
+
+                            Joint neck = body.Joints[JointType.Neck];
+                            DepthSpacePoint realJointNeck = sensor.CoordinateMapper.MapCameraPointToDepthSpace(neck.Position);
+                            float neckX = realJointNeck.X;
+                            float neckY = realJointNeck.Y;
+                            float neckZ = neck.Position.Z;
+
+                            Ellipse drawNeck = new Ellipse
+                            {
+                                Fill = Brushes.Orange,
+                                Width = 20,
+                                Height = 20
+                            };
+
+                            Canvas.SetLeft(drawNeck, neckX - drawNeck.Width / 2);
+                            Canvas.SetTop(drawNeck, neckY - drawNeck.Height / 2);
+                            canvas.Children.Add(drawNeck);
+                            
+                            //LeftShoulder
+
+                            Joint leftShoulder = body.Joints[JointType.ShoulderLeft];
+                            DepthSpacePoint realJointLeftShoulder = sensor.CoordinateMapper.MapCameraPointToDepthSpace(leftShoulder.Position);
+                            float leftShoulderX = realJointLeftShoulder.X;
+                            float leftShoulderY = realJointLeftShoulder.Y;
+                            float leftShoulderZ = leftShoulder.Position.Z;
+
+                            Ellipse drawLeftShoulder = new Ellipse
+                            {
+                                Fill = Brushes.Yellow,
+                                Width = 20,
+                                Height = 20
+                            };
+
+                            Canvas.SetLeft(drawLeftShoulder, leftShoulderX - drawLeftShoulder.Width / 2);
+                            Canvas.SetTop(drawLeftShoulder, leftShoulderY - drawLeftShoulder.Height / 2);
+                            canvas.Children.Add(drawLeftShoulder);
+
+                            //ElbowLeft
+
+                            Joint elbowLeft = body.Joints[JointType.ElbowLeft];
+                            DepthSpacePoint realJointElbowLeft = sensor.CoordinateMapper.MapCameraPointToDepthSpace(elbowLeft.Position);
+                            float elbowLeftX = realJointElbowLeft.X;
+                            float elbowLeftY = realJointElbowLeft.Y;
+                            float elbowLeftZ = elbowLeft.Position.Z;
+
+                            Ellipse drawElbowLeft = new Ellipse
+                            {
+                                Fill = Brushes.Yellow,
+                                Width = 20,
+                                Height = 20
+                            };
+
+                            Canvas.SetLeft(drawElbowLeft, elbowLeftX - drawElbowLeft.Width / 2);
+                            Canvas.SetTop(drawElbowLeft, elbowLeftY - drawElbowLeft.Height / 2);
+                            canvas.Children.Add(drawElbowLeft);
+
+                            //WristLeft
+
+                            Joint wristLeft = body.Joints[JointType.WristLeft];
+                            DepthSpacePoint realJointWristLeft = sensor.CoordinateMapper.MapCameraPointToDepthSpace(wristLeft.Position);
+                            float wristLeftX = realJointWristLeft.X;
+                            float wristLeftY = realJointWristLeft.Y;
+                            float wristLeftZ = wristLeft.Position.Z;
+
+                            Ellipse drawWristLeft = new Ellipse
+                            {
+                                Fill = Brushes.Yellow,
+                                Width = 20,
+                                Height = 20
+                            };
+
+                            Canvas.SetLeft(drawWristLeft, wristLeftX - drawWristLeft.Width / 2);
+                            Canvas.SetTop(drawWristLeft, wristLeftY - drawWristLeft.Height / 2);
+                            canvas.Children.Add(drawWristLeft);
+
+                            //RightShoulder
+
+                            Joint rightShoulder = body.Joints[JointType.ShoulderRight];
+                            DepthSpacePoint realJointRightShoulder = sensor.CoordinateMapper.MapCameraPointToDepthSpace(rightShoulder.Position);
+                            float rightShoulderX = realJointRightShoulder.X;
+                            float rightShoulderY = realJointRightShoulder.Y;
+                            float rightShoulderZ = rightShoulder.Position.Z;
+
+                            Ellipse drawRightShoulder = new Ellipse
+                            {
+                                Fill = Brushes.Green,
+                                Width = 20,
+                                Height = 20
+                            };
+
+                            Canvas.SetLeft(drawRightShoulder, rightShoulderX - drawRightShoulder.Width / 2);
+                            Canvas.SetTop(drawRightShoulder, rightShoulderY - drawRightShoulder.Height / 2);
+                            canvas.Children.Add(drawRightShoulder);
+
+                            //ElbowRight
+
+                            Joint elbowRight = body.Joints[JointType.ElbowRight];
+                            DepthSpacePoint realJointElbowRight = sensor.CoordinateMapper.MapCameraPointToDepthSpace(elbowRight.Position);
+                            float elbowRightX = realJointElbowRight.X;
+                            float elbowRightY = realJointElbowRight.Y;
+                            float elbowRightZ = elbowRight.Position.Z;
+
+                            Ellipse drawElbowRight = new Ellipse
+                            {
+                                Fill = Brushes.Green,
+                                Width = 20,
+                                Height = 20
+                            };
+
+                            Canvas.SetLeft(drawElbowRight, elbowRightX - drawElbowRight.Width / 2);
+                            Canvas.SetTop(drawElbowRight, elbowRightY - drawElbowRight.Height / 2);
+                            canvas.Children.Add(drawElbowRight);
+
+                            //WristRight
+
+                            Joint wristRight = body.Joints[JointType.WristRight];
+                            DepthSpacePoint realJointWristRight = sensor.CoordinateMapper.MapCameraPointToDepthSpace(wristRight.Position);
+                            float wristRightX = realJointWristRight.X;
+                            float wristRightY = realJointWristRight.Y;
+                            float wristRightZ = wristRight.Position.Z;
+
+                            Ellipse drawWristRight = new Ellipse
+                            {
+                                Fill = Brushes.Green,
+                                Width = 20,
+                                Height = 20
+                            };
+
+                            Canvas.SetLeft(drawWristRight, wristRightX - drawWristRight.Width / 2);
+                            Canvas.SetTop(drawWristRight, wristRightY - drawWristRight.Height / 2);
+                            canvas.Children.Add(drawWristRight);
+
+                            //SpineBase
+
+                            Joint spineBase = body.Joints[JointType.SpineBase];
+                            DepthSpacePoint realJointSpineBase = sensor.CoordinateMapper.MapCameraPointToDepthSpace(spineBase.Position);
+                            float spineBaseX = realJointSpineBase.X;
+                            float spineBaseY = realJointSpineBase.Y;
+                            float spineBaseZ = spineBase.Position.Z;
+
+                            Ellipse drawSpineBase = new Ellipse
+                            {
+                                Fill = Brushes.Orange,
+                                Width = 20,
+                                Height = 20
+                            };
+
+                            Canvas.SetLeft(drawSpineBase, spineBaseX - drawSpineBase.Width / 2);
+                            Canvas.SetTop(drawSpineBase, spineBaseY - drawSpineBase.Height / 2);
+                            canvas.Children.Add(drawSpineBase);
+
+                            //SpineMid
+
+                            Joint spineMid = body.Joints[JointType.SpineMid];
+                            DepthSpacePoint realJointSpineMid = sensor.CoordinateMapper.MapCameraPointToDepthSpace(spineMid.Position);
+                            float spineMidX = realJointSpineMid.X;
+                            float spineMidY = realJointSpineMid.Y;
+                            float spineMidZ = spineMid.Position.Z;
+
+                            Ellipse drawSpineMid = new Ellipse
+                            {
+                                Fill = Brushes.Orange,
+                                Width = 20,
+                                Height = 20
+                            };
+
+                            Canvas.SetLeft(drawSpineMid, spineMidX - drawSpineMid.Width / 2);
+                            Canvas.SetTop(drawSpineMid, spineMidY - drawSpineMid.Height / 2);
+                            canvas.Children.Add(drawSpineMid);
+
+
+
+                            //Drawing Skeleton
+                            //Head to Neck
+                            Line lineHeadToNeck = new Line();
+                            lineHeadToNeck.Stroke = Brushes.LightSteelBlue;
+                            lineHeadToNeck.X1 = headX;
+                            lineHeadToNeck.Y1 = headY;
+                            lineHeadToNeck.X2 = neckX;
+                            lineHeadToNeck.Y2 = neckY;
+                            lineHeadToNeck.StrokeThickness = 2;
+                            //Neck to LeftShoulder
+                            Line lineNeckToLeftShoulder = new Line();
+                            lineNeckToLeftShoulder.Stroke = Brushes.LightSteelBlue;
+                            lineNeckToLeftShoulder.X1 = leftShoulderX;
+                            lineNeckToLeftShoulder.Y1 = leftShoulderY;
+                            lineNeckToLeftShoulder.X2 = neckX;
+                            lineNeckToLeftShoulder.Y2 = neckY;
+                            lineNeckToLeftShoulder.StrokeThickness = 2;
+                            //LeftShoulder to LeftElbow
+                            Line lineLeftShoulderToElbowLeft = new Line();
+                            lineLeftShoulderToElbowLeft.Stroke = Brushes.LightSteelBlue;
+                            lineLeftShoulderToElbowLeft.X1 = leftShoulderX;
+                            lineLeftShoulderToElbowLeft.Y1 = leftShoulderY;
+                            lineLeftShoulderToElbowLeft.X2 = elbowLeftX;
+                            lineLeftShoulderToElbowLeft.Y2 = elbowLeftY;
+                            lineLeftShoulderToElbowLeft.StrokeThickness = 2;
+                            //LeftElbow to LeftWrist
+                            Line lineElbowLeftToWristLeft = new Line();
+                            lineElbowLeftToWristLeft.Stroke = Brushes.LightSteelBlue;
+                            lineElbowLeftToWristLeft.X1 = elbowLeftX;
+                            lineElbowLeftToWristLeft.Y1 = elbowLeftY;
+                            lineElbowLeftToWristLeft.X2 = wristLeftX;
+                            lineElbowLeftToWristLeft.Y2 = wristLeftY;
+                            lineElbowLeftToWristLeft.StrokeThickness = 2;
+                            
+                            //Neck to RightShoulder
+                            Line lineNeckToRightShoulder = new Line();
+                            lineNeckToRightShoulder.Stroke = Brushes.LightSteelBlue;
+                            lineNeckToRightShoulder.X1 = rightShoulderX;
+                            lineNeckToRightShoulder.Y1 = rightShoulderY;
+                            lineNeckToRightShoulder.X2 = neckX;
+                            lineNeckToRightShoulder.Y2 = neckY;
+                            lineNeckToRightShoulder.StrokeThickness = 2;
+                            //RightShoulder to RightElbow
+                            Line lineRightShoulderToElbowRight = new Line();
+                            lineRightShoulderToElbowRight.Stroke = Brushes.LightSteelBlue;
+                            lineRightShoulderToElbowRight.X1 = rightShoulderX;
+                            lineRightShoulderToElbowRight.Y1 = rightShoulderY;
+                            lineRightShoulderToElbowRight.X2 = elbowRightX;
+                            lineRightShoulderToElbowRight.Y2 = elbowRightY;
+                            lineRightShoulderToElbowRight.StrokeThickness = 2;
+                            //RightElbow to RightWrist
+                            Line lineElbowRightToWristRight = new Line();
+                            lineElbowRightToWristRight.Stroke = Brushes.LightSteelBlue;
+                            lineElbowRightToWristRight.X1 = elbowRightX;
+                            lineElbowRightToWristRight.Y1 = elbowRightY;
+                            lineElbowRightToWristRight.X2 = wristRightX;
+                            lineElbowRightToWristRight.Y2 = wristRightY;
+                            lineElbowRightToWristRight.StrokeThickness = 2;
+
+                            //Neck to SpineMid
+                            Line lineNeckToSpineMid = new Line();
+                            lineNeckToSpineMid.Stroke = Brushes.LightSteelBlue;
+                            lineNeckToSpineMid.X1 = neckX;
+                            lineNeckToSpineMid.Y1 = neckY;
+                            lineNeckToSpineMid.X2 = spineMidX;
+                            lineNeckToSpineMid.Y2 = spineMidY;
+                            lineNeckToSpineMid.StrokeThickness = 2;
+
+                            //SpineMid to SpineBase
+                            Line lineSpineMidToSpineBase = new Line();
+                            lineSpineMidToSpineBase.Stroke = Brushes.LightSteelBlue;
+                            lineSpineMidToSpineBase.X1 = spineMidX;
+                            lineSpineMidToSpineBase.Y1 = spineMidY;
+                            lineSpineMidToSpineBase.X2 = spineBaseX;
+                            lineSpineMidToSpineBase.Y2 = spineBaseY;
+                            lineSpineMidToSpineBase.StrokeThickness = 2;
+
+
+                            canvas.Children.Add(lineHeadToNeck);
+                            canvas.Children.Add(lineNeckToLeftShoulder);
+                            canvas.Children.Add(lineNeckToRightShoulder);
+                            canvas.Children.Add(lineLeftShoulderToElbowLeft);
+                            canvas.Children.Add(lineRightShoulderToElbowRight);
+                            canvas.Children.Add(lineElbowRightToWristRight);
+                            canvas.Children.Add(lineElbowLeftToWristLeft);
+                            canvas.Children.Add(lineNeckToSpineMid);
+                            canvas.Children.Add(lineSpineMidToSpineBase);
                         }
                     }
-                }
+            }
+        }
             
 
-        }
+    }
+        
 
         //Depth Frame
         void OnDepthFrameArrived(object sender, DepthFrameArrivedEventArgs e)
@@ -151,20 +424,8 @@ namespace Coordinator
             }
         }
 
-        static Brush[] brushes =
-        {
-            Brushes.Green,
-            Brushes.Blue,
-            Brushes.Red,
-            Brushes.Orange,
-            Brushes.Purple,
-            Brushes.Yellow
-
-        };
-
+        
     }
-
-    
         
 }
 

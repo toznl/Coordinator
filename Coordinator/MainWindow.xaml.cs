@@ -14,7 +14,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 using Microsoft.Kinect;
+
+using System.Net;
+using System.Net.Sockets;
+
 
 namespace Coordinator
 {
@@ -22,18 +27,15 @@ namespace Coordinator
 
     {
         //Variables
-        KinectSensor sensor; 
+        KinectSensor sensor;
         DepthFrameReader depthReader;
         BodyFrameReader bodyReader;
         IList<Body> bodies;
-
 
         //For using console windows
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
-
-        
 
         //Main windows Initialize
         public MainWindow()
@@ -81,7 +83,7 @@ namespace Coordinator
 
             this.bodyReader = this.sensor.BodyFrameSource.OpenReader();
             this.bodyReader.FrameArrived += OnBodyFrameArrived;
-            
+
         }
 
         //Close all readers
@@ -94,8 +96,6 @@ namespace Coordinator
             this.bodyReader.FrameArrived -= OnBodyFrameArrived;
             this.bodyReader.Dispose();
             this.bodyReader = null;
-
-
         }
         //release Kinect v2 Sensor
         void ReleaseSensor()
@@ -104,25 +104,80 @@ namespace Coordinator
             this.sensor = null;
         }
 
+        //Winsock client 
+        void client (string[] args)
+        {
+            byte[] bytes = new byte[1024];
+
+            // connect to a Remote device
+            try
+            {
+                // Establish the remote end point for the socket
+                IPHostEntry ipHost = Dns.Resolve("127.0.0.1");
+                IPAddress ipAddr = ipHost.AddressList[0];
+                IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, 8080);
+
+                Socket sender = new Socket(AddressFamily.InterNetwork,
+                                           SocketType.Stream, ProtocolType.Tcp);
+
+
+
+                // Connect the socket to the remote endpoint. Catch any errors
+
+                sender.Connect(ipEndPoint);
+
+                Console.WriteLine("Socket connected to {0}",
+                                  sender.RemoteEndPoint.ToString());
+                //string theMessage=Console.ReadLine();
+                string theMessage;
+
+                if (args.Length == 0)
+                    theMessage = "This is a test";
+                else
+                    theMessage = args[0];
+
+                byte[] msg = Encoding.ASCII.GetBytes(theMessage + "<TheEnd>");
+
+                // Send the data through the socket
+                int bytesSent = sender.Send(msg);
+
+                // Receive the response from the remote device            
+                int bytesRec = sender.Receive(bytes);
+
+                Console.WriteLine("The Server says : {0}",
+                                  Encoding.ASCII.GetString(bytes, 0, bytesRec));
+
+                // Release the socket
+                sender.Shutdown(SocketShutdown.Both);
+                sender.Close();
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception: {0}", e.ToString());
+            }
+        }
+
         //Body Frame
         void OnBodyFrameArrived(object sender, BodyFrameArrivedEventArgs e)
         {
             var frame = e.FrameReference.AcquireFrame();
-            
+
             if (frame != null)
-                {
+            {
 
                 canvas.Children.Clear();
                 bodies = new Body[frame.BodyFrameSource.BodyCount];
 
                 frame.GetAndRefreshBodyData(bodies);
 
-                    foreach (var body in bodies)
+                foreach (var body in bodies)
+                {
+                    if (bodies != null)
                     {
-                        if (bodies != null)
+                        if (body.IsTracked)
                         {
-                            if (body.IsTracked)
-                            {
 
                             //Head
 
@@ -142,7 +197,7 @@ namespace Coordinator
                             Canvas.SetLeft(drawHead, headX - drawHead.Width / 2);
                             Canvas.SetTop(drawHead, headY - drawHead.Height / 2);
                             canvas.Children.Add(drawHead);
-                            
+
                             //Neck
 
                             Joint neck = body.Joints[JointType.Neck];
@@ -161,7 +216,7 @@ namespace Coordinator
                             Canvas.SetLeft(drawNeck, neckX - drawNeck.Width / 2);
                             Canvas.SetTop(drawNeck, neckY - drawNeck.Height / 2);
                             canvas.Children.Add(drawNeck);
-                            
+
                             //LeftShoulder
 
                             Joint leftShoulder = body.Joints[JointType.ShoulderLeft];
@@ -349,7 +404,7 @@ namespace Coordinator
                             lineElbowLeftToWristLeft.X2 = wristLeftX;
                             lineElbowLeftToWristLeft.Y2 = wristLeftY;
                             lineElbowLeftToWristLeft.StrokeThickness = 2;
-                            
+
                             //Neck to RightShoulder
                             Line lineNeckToRightShoulder = new Line();
                             lineNeckToRightShoulder.Stroke = Brushes.LightSteelBlue;
@@ -405,12 +460,12 @@ namespace Coordinator
                             canvas.Children.Add(lineSpineMidToSpineBase);
                         }
                     }
+                }
             }
-        }
-            
 
-    }
-        
+
+        }
+
 
         //Depth Frame
         void OnDepthFrameArrived(object sender, DepthFrameArrivedEventArgs e)
@@ -424,8 +479,8 @@ namespace Coordinator
             }
         }
 
-        
+
     }
-        
+
 }
 

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Coordinator"
         mc:Ignorable="d"
         Title="Coordinator" Height="550" Width="450" Background="Black">
-    <Grid>
+    <Grid x:Name="root">
         <Image Name="depthCamera" Width="400" Height="500"/>
         <Canvas Name="canvas" Width="400" Height="500"/>
         

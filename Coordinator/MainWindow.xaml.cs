@@ -31,19 +31,15 @@ namespace Coordinator
         DepthFrameReader depthReader;
         BodyFrameReader bodyReader;
         IList<Body> bodies;
-
-        //For using console windows
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool AllocConsole();
-
+        
         //Main windows Initialize
         public MainWindow()
         {
-
-            AllocConsole();
             InitializeComponent();
             this.Loaded += OnLoaded;
+            RunServer sv = new RunServer();
+            root.Children.Add(sv);
+            this.Closing += delegate { Environment.Exit(1); };
         }
 
         //Depth Image Process Frame
@@ -66,7 +62,7 @@ namespace Coordinator
                 pixels[colorIndex++] = intensity; // Green
                 pixels[colorIndex++] = intensity; // Red
                 ++colorIndex;
-            }
+            }   
 
             int stride = width * format.BitsPerPixel / 8;
             return BitmapSource.Create(width, height, 96, 96, format, null, pixels, stride);
@@ -107,56 +103,8 @@ namespace Coordinator
         //Winsock client 
         void client (string[] args)
         {
-            byte[] bytes = new byte[1024];
-
-            // connect to a Remote device
-            try
-            {
-                // Establish the remote end point for the socket
-                IPHostEntry ipHost = Dns.Resolve("127.0.0.1");
-                IPAddress ipAddr = ipHost.AddressList[0];
-                IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, 8080);
-
-                Socket sender = new Socket(AddressFamily.InterNetwork,
-                                           SocketType.Stream, ProtocolType.Tcp);
-
-
-
-                // Connect the socket to the remote endpoint. Catch any errors
-
-                sender.Connect(ipEndPoint);
-
-                Console.WriteLine("Socket connected to {0}",
-                                  sender.RemoteEndPoint.ToString());
-                //string theMessage=Console.ReadLine();
-                string theMessage;
-
-                if (args.Length == 0)
-                    theMessage = "This is a test";
-                else
-                    theMessage = args[0];
-
-                byte[] msg = Encoding.ASCII.GetBytes(theMessage + "<TheEnd>");
-
-                // Send the data through the socket
-                int bytesSent = sender.Send(msg);
-
-                // Receive the response from the remote device            
-                int bytesRec = sender.Receive(bytes);
-
-                Console.WriteLine("The Server says : {0}",
-                                  Encoding.ASCII.GetString(bytes, 0, bytesRec));
-
-                // Release the socket
-                sender.Shutdown(SocketShutdown.Both);
-                sender.Close();
-
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception: {0}", e.ToString());
-            }
+            
+       
         }
 
         //Body Frame

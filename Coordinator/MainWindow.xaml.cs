@@ -37,9 +37,12 @@ namespace Coordinator
         {
             InitializeComponent();
             this.Loaded += OnLoaded;
-            RunServer sv = new RunServer();
-            root.Children.Add(sv);
-            this.Closing += delegate { Environment.Exit(1); };
+            Client cl = new Client(root);
+            root.Children.Add(cl);
+            this.Closing += delegate
+            {
+                Environment.Exit(1);
+            };
         }
 
         //Depth Image Process Frame
@@ -146,6 +149,8 @@ namespace Coordinator
                             Canvas.SetTop(drawHead, headY - drawHead.Height / 2);
                             canvas.Children.Add(drawHead);
 
+                            CoOrd coHead = new CoOrd(headX, headY, headZ);
+
                             //Neck
 
                             Joint neck = body.Joints[JointType.Neck];
@@ -164,6 +169,8 @@ namespace Coordinator
                             Canvas.SetLeft(drawNeck, neckX - drawNeck.Width / 2);
                             Canvas.SetTop(drawNeck, neckY - drawNeck.Height / 2);
                             canvas.Children.Add(drawNeck);
+
+                            CoOrd coNeck = new CoOrd(neckX, neckY, neckZ);
 
                             //LeftShoulder
 
@@ -184,6 +191,8 @@ namespace Coordinator
                             Canvas.SetTop(drawLeftShoulder, leftShoulderY - drawLeftShoulder.Height / 2);
                             canvas.Children.Add(drawLeftShoulder);
 
+                            CoOrd coLeftShoulder = new CoOrd(leftShoulderX, leftShoulderY, leftShoulderZ);
+
                             //ElbowLeft
 
                             Joint elbowLeft = body.Joints[JointType.ElbowLeft];
@@ -202,6 +211,9 @@ namespace Coordinator
                             Canvas.SetLeft(drawElbowLeft, elbowLeftX - drawElbowLeft.Width / 2);
                             Canvas.SetTop(drawElbowLeft, elbowLeftY - drawElbowLeft.Height / 2);
                             canvas.Children.Add(drawElbowLeft);
+
+                            CoOrd coElbowLeft = new CoOrd(elbowLeftX, elbowLeftY, elbowLeftZ);
+
 
                             //WristLeft
 
@@ -222,6 +234,8 @@ namespace Coordinator
                             Canvas.SetTop(drawWristLeft, wristLeftY - drawWristLeft.Height / 2);
                             canvas.Children.Add(drawWristLeft);
 
+                            CoOrd coWristLeft = new CoOrd(wristLeftX, wristLeftY, wristLeftZ);
+
                             //RightShoulder
 
                             Joint rightShoulder = body.Joints[JointType.ShoulderRight];
@@ -240,6 +254,8 @@ namespace Coordinator
                             Canvas.SetLeft(drawRightShoulder, rightShoulderX - drawRightShoulder.Width / 2);
                             Canvas.SetTop(drawRightShoulder, rightShoulderY - drawRightShoulder.Height / 2);
                             canvas.Children.Add(drawRightShoulder);
+
+                            CoOrd coRightShoulder = new CoOrd(rightShoulderX, rightShoulderY, rightShoulderZ);
 
                             //ElbowRight
 
@@ -260,6 +276,8 @@ namespace Coordinator
                             Canvas.SetTop(drawElbowRight, elbowRightY - drawElbowRight.Height / 2);
                             canvas.Children.Add(drawElbowRight);
 
+                            CoOrd coElbowRight = new CoOrd(elbowRightX, elbowRightY, elbowRightZ);
+
                             //WristRight
 
                             Joint wristRight = body.Joints[JointType.WristRight];
@@ -278,6 +296,8 @@ namespace Coordinator
                             Canvas.SetLeft(drawWristRight, wristRightX - drawWristRight.Width / 2);
                             Canvas.SetTop(drawWristRight, wristRightY - drawWristRight.Height / 2);
                             canvas.Children.Add(drawWristRight);
+
+                            CoOrd coWristRight = new CoOrd(wristRightX, wristRightY, wristRightZ);
 
                             //SpineBase
 
@@ -298,6 +318,8 @@ namespace Coordinator
                             Canvas.SetTop(drawSpineBase, spineBaseY - drawSpineBase.Height / 2);
                             canvas.Children.Add(drawSpineBase);
 
+                            CoOrd coSpineBase = new CoOrd(spineBaseX, spineBaseY, spineBaseZ);
+
                             //SpineMid
 
                             Joint spineMid = body.Joints[JointType.SpineMid];
@@ -317,6 +339,7 @@ namespace Coordinator
                             Canvas.SetTop(drawSpineMid, spineMidY - drawSpineMid.Height / 2);
                             canvas.Children.Add(drawSpineMid);
 
+                            CoOrd coSpineMid = new CoOrd(spineMidX, spineMidY, spineMidZ);
 
 
                             //Drawing Skeleton

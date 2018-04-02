@@ -66,35 +66,29 @@ namespace Coordinator
             gch.Free();
         }
 
-        public void SendCoord(CoOrd co)
+        public void SendCoord(byte[] buffer)
         {
-            if (co.x != null && co.y != null && co.z != null)
+            TcpClient client = new TcpClient();
+            for (int i = 0; i < 10; i++)
             {
-                for (int i = 0; i < 10; i++)
-                {
-                    byte[] buffer = co.Serialize();
+                client.Connect("127.0.0.1", 8080);
 
-                    TcpClient client = new TcpClient();
-                    client.Connect("127.0.0.1", 8080);
-                    Console.WriteLine("connected...");
+                NetworkStream stream = client.GetStream();
 
-                    NetworkStream stream = client.GetStream();
-
-                    stream.Write(buffer, 0, buffer.Length);
-                    Console.WriteLine("{0} data sent", buffer.Length);
-                }
-
+                stream.Write(buffer, 0, buffer.Length);
+                Console.WriteLine("{0} data sent", buffer.Length);
             }
+
         }
     }
 
     public partial class Client : UserControl
     {
         private Socket socket = null;
-        private Thread waitMsg = null;
+        //private Thread waitMsg = null;
         private Grid root;
 
-        bool flag = true;
+        //bool flag = true;
         public Client(Grid root)
         {
             InitializeComponent();
@@ -102,15 +96,6 @@ namespace Coordinator
             Connect();
         }
 
-        private void SendMsg()
-        {
-            CoOrd co = new CoOrd();
-            try
-            {
-                
-            }
-            catch (Exception) { MessageBox.Show("메세지 센드에서 익셉션."); }
-        }
         private void Connect()
         {
             try
@@ -120,39 +105,37 @@ namespace Coordinator
                 socket.Connect(iep);
                 socket.Send(Encoding.Default.GetBytes("접속."));
 
-                waitMsg = new Thread(new ThreadStart(wait));
-                waitMsg.Start();
+                //waitMsg = new Thread(new ThreadStart(wait));
+                //waitMsg.Start();
             }
             catch (Exception e) { MessageBox.Show(e.ToString()); }
         }
 
         delegate void MyDelegate();
 
-        private void wait()
-        {
+        //private void wait()
+        //{
 
-            while (flag)
-            {
-                try
-                {
-                    byte[] data = new byte[1024];
-                    string msg;
-                    socket.Receive(data, data.Length, SocketFlags.None);
-                    msg = Encoding.Default.GetString(data);
-                    msg = msg.TrimEnd('\0');
-                    MyDelegate del = delegate ()
-                    {
-                    };
-                    root.Dispatcher.Invoke(DispatcherPriority.Normal, del);
-
-
-                }
-                catch (Exception ex) { MessageBox.Show(ex.ToString()); }
-            }
-        }
-        ~Client()
-        {
-            flag = false;
-        }
+        //    while (flag)
+        //    {
+        //        try
+        //        {
+        //            byte[] data = new byte[1024];
+        //            string msg;
+        //            socket.Receive(data, data.Length, SocketFlags.None);
+        //            msg = Encoding.Default.GetString(data);
+        //            msg = msg.TrimEnd('\0');
+        //            MyDelegate del = delegate ()
+        //            {
+        //            };
+        //            root.Dispatcher.Invoke(DispatcherPriority.Normal, del);
+        //        }
+        //        catch (Exception ex) { MessageBox.Show(ex.ToString()); }
+        //    }
+        //}
+        //~Client()
+        //{
+        //    flag = false;
+        //}
     }
 }

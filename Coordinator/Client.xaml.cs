@@ -17,11 +17,18 @@ using System.Threading;
 using System.Windows.Threading;
 
 using System.Runtime.InteropServices;
+using Microsoft.Kinect;
+using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
+using System.IO;
+using System.Security.Cryptography;
 
 
 namespace Coordinator
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    [Serializable]
     public struct CoOrd
     {
         [MarshalAs(UnmanagedType.R4)]
@@ -33,109 +40,64 @@ namespace Coordinator
         [MarshalAs(UnmanagedType.R4)]
         public float z;
 
-        public CoOrd(float x1, float y1, float z1)
+        [MarshalAs(UnmanagedType.IUnknown)]
+        public object markerType;
+
+        [MarshalAs(UnmanagedType.IUnknown)]
+        public object markerTrackingState;
+
+        public CoOrd(float x1, float y1, float z1, object m1, object m2)
         {
             x = x1;
             y = y1;
             z = z1;
+            markerType = m1;
+            markerTrackingState = m2;
+
         }
+
 
         // Calling this method will return a byte array with the contents
         // of the struct ready to be sent via the tcp socket.
-        public byte[] Serialize()
-        {
-            // allocate a byte array for the struct data
-            var buffer = new byte[Marshal.SizeOf(typeof(CoOrd))];
+        //public byte[] Serialize()
+        //{
+        //    // allocate a byte array for the struct data
+        //    var buffer = new byte[Marshal.SizeOf(typeof(CoOrd))];
 
-            // Allocate a GCHandle and get the array pointer
-            var gch = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-            var pBuffer = gch.AddrOfPinnedObject();
+        //    // Allocate a GCHandle and get the array pointer
+        //    var gch = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+        //    var pBuffer = gch.AddrOfPinnedObject();
 
-            // copy data from struct to array and unpin the gc pointer
-            Marshal.StructureToPtr(this, pBuffer, false);
-            gch.Free();
+        //    // copy data from struct to array and unpin the gc pointer
+        //    Marshal.StructureToPtr(this, pBuffer, false);
+        //    gch.Free();
 
-            return buffer;
-        }
+        //    return buffer;
+        //}
 
-        // this method will deserialize a byte array into the struct.
-        public void Deserialize(ref byte[] data)
-        {
-            var gch = GCHandle.Alloc(data, GCHandleType.Pinned);
-            this = (CoOrd)Marshal.PtrToStructure(gch.AddrOfPinnedObject(), typeof(CoOrd));
-            gch.Free();
-        }
-
-        public void SendCoord(byte[] buffer)
-        {
-            TcpClient client = new TcpClient();
-            for (int i = 0; i < 10; i++)
-            {
-                client.Connect("127.0.0.1", 8080);
-
-                NetworkStream stream = client.GetStream();
-
-                stream.Write(buffer, 0, buffer.Length);
-                Console.WriteLine("{0} data sent", buffer.Length);
-            }
-
-        }
+        //// this method will deserialize a byte array into the struct.
+        //public void Deserialize(ref byte[] data)
+        //{
+        //    var gch = GCHandle.Alloc(data, GCHandleType.Pinned);
+        //    this = (CoOrd)Marshal.PtrToStructure(gch.AddrOfPinnedObject(), typeof(CoOrd));
+        //    gch.Free();
+        //}
     }
 
     public partial class Client : UserControl
     {
-        private Socket socket = null;
-        //private Thread waitMsg = null;
         private Grid root;
+
+        ////For using console windows
+        //[DllImport("kernel32.dll", SetLastError = true)]
+        //[return: MarshalAs(UnmanagedType.Bool)]
+        //static extern bool AllocConsole();
 
         //bool flag = true;
         public Client(Grid root)
         {
             InitializeComponent();
             this.root = root;
-            Connect();
         }
-
-        private void Connect()
-        {
-            try
-            {
-                IPEndPoint iep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8080);
-                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                socket.Connect(iep);
-                socket.Send(Encoding.Default.GetBytes("접속."));
-
-                //waitMsg = new Thread(new ThreadStart(wait));
-                //waitMsg.Start();
-            }
-            catch (Exception e) { MessageBox.Show(e.ToString()); }
-        }
-
-        delegate void MyDelegate();
-
-        //private void wait()
-        //{
-
-        //    while (flag)
-        //    {
-        //        try
-        //        {
-        //            byte[] data = new byte[1024];
-        //            string msg;
-        //            socket.Receive(data, data.Length, SocketFlags.None);
-        //            msg = Encoding.Default.GetString(data);
-        //            msg = msg.TrimEnd('\0');
-        //            MyDelegate del = delegate ()
-        //            {
-        //            };
-        //            root.Dispatcher.Invoke(DispatcherPriority.Normal, del);
-        //        }
-        //        catch (Exception ex) { MessageBox.Show(ex.ToString()); }
-        //    }
-        //}
-        //~Client()
-        //{
-        //    flag = false;
-        //}
     }
 }

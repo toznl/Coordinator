@@ -19,8 +19,11 @@ using Microsoft.Kinect;
 
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
-
+using System.IO;
+using System.Security.Cryptography;
 
 namespace Coordinator
 {
@@ -30,8 +33,12 @@ namespace Coordinator
         //Variables
         KinectSensor sensor;
         DepthFrameReader depthReader;
-        BodyFrameReader bodyReader;
+        BodyFrameReader bodyReader; 
         IList<Body> bodies;
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
 
 
         //Main windows Initialize
@@ -39,6 +46,8 @@ namespace Coordinator
         {
             InitializeComponent();
             this.Loaded += OnLoaded;
+
+            AllocConsole();
             Client cl = new Client(root);
             root.Children.Add(cl);
             this.Closing += delegate
@@ -87,6 +96,54 @@ namespace Coordinator
 
         }
 
+        void SendBuffer(ref byte[] buffer)
+        {
+            try
+            {
+                Socket sender = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+                IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 11000);
+
+
+                sender.Connect(ipEndPoint);
+                Console.WriteLine("Socket connected to {0}", sender.RemoteEndPoint.ToString());
+
+                sender.Send(buffer);
+                sender.Dispose();
+                sender.Close();
+
+                System.Threading.Thread.Sleep(1000);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception:{0}", e.ToString());
+            }
+        }
+
+
+        public byte[] Serialize(object param)
+        {
+            byte[] encMsg = null;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                IFormatter br = new BinaryFormatter();
+                br.Serialize(ms, param);
+                encMsg = ms.ToArray();
+            }
+
+            return encMsg;
+        }
+
+        public T Deserialize<T>(byte[] param)
+        {
+            using (MemoryStream ms = new MemoryStream(param))
+            {
+                IFormatter br = new BinaryFormatter();
+                return (T)br.Deserialize(ms);
+            }
+        }
+
         //Close all readers
         void CloseReader(object sender, RoutedEventArgs e)
         {
@@ -117,14 +174,13 @@ namespace Coordinator
                 bodies = new Body[frame.BodyFrameSource.BodyCount];
 
                 frame.GetAndRefreshBodyData(bodies);
-
+                
                 foreach (var body in bodies)
                 {
                     if (bodies != null)
                     {
                         if (body.IsTracked)
                         {
-
                             //Head
 
                             Joint head = body.Joints[JointType.Head];
@@ -132,16 +188,44 @@ namespace Coordinator
                             float headX = realJointHead.X;
                             float headY = realJointHead.Y;
                             float headZ = head.Position.Z;
+                            
+                            CoOrd coHead = new CoOrd(headX, headY, headZ, head.JointType, head.TrackingState);
 
-                            CoOrd coHead = new CoOrd(headX, headY, headZ);
+                            byte[] buffer = Serialize(coHead);
+                            //int buffer = 1;
+                            CoOrd coHeadDeS = new CoOrd();
+                            coHeadDeS=Deserialize<CoOrd>(buffer);
+                            Console.WriteLine(coHeadDeS.x);
 
-                            byte[] buffer = coHead.Serialize();
 
+                            SendBuffer(ref buffer);
+
+                      
+
+                            //send buffer to server
+
+
+                            //Testing Things
+                            
+                            
                             //coHeadDeS.Deserialize(ref buffer);
 
                             //float headXt = coHeadDeS.x;
-                            //float headYt=coHeadDeS.y;
+                            //float headYt = coHeadDeS.y;
                             //float headZt = coHeadDeS.z;
+                            //Object headMt = coHeadDeS.m;
+                            //string marker = headMt.ToString();
+                            //if(head.TrackingState == TrackingState.Inferred)
+                            //{
+                            //    System.Console.WriteLine("Infferred");
+                            //}
+
+
+                            //if (marker == "Head")
+                            //{
+                            //    System.Console.WriteLine(headMt);
+                            //}
+
 
                             //Ellipse drawHead = new Ellipse
                             //{
@@ -153,8 +237,6 @@ namespace Coordinator
                             //Canvas.SetLeft(drawHead, headXt - drawHead.Width / 2);
                             //Canvas.SetTop(drawHead, headYt - drawHead.Height / 2);
                             //canvas.Children.Add(drawHead);
-
-                            coHead.SendCoord(buffer);
 
 
                             //Neck
@@ -176,7 +258,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawNeck, neckY - drawNeck.Height / 2);
                         //canvas.Children.Add(drawNeck);
 
-                        CoOrd coNeck = new CoOrd(neckX, neckY, neckZ);
+                        CoOrd coNeck = new CoOrd(neckX, neckY, neckZ, neck.JointType, neck.TrackingState);
 
                         //LeftShoulder
 
@@ -197,7 +279,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawLeftShoulder, leftShoulderY - drawLeftShoulder.Height / 2);
                         //canvas.Children.Add(drawLeftShoulder);
 
-                        CoOrd coLeftShoulder = new CoOrd(leftShoulderX, leftShoulderY, leftShoulderZ);
+                        CoOrd coLeftShoulder = new CoOrd(leftShoulderX, leftShoulderY, leftShoulderZ, leftShoulder.JointType, leftShoulder.TrackingState);
 
                         //ElbowLeft
 
@@ -218,7 +300,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawElbowLeft, elbowLeftY - drawElbowLeft.Height / 2);
                         //canvas.Children.Add(drawElbowLeft);
 
-                        CoOrd coElbowLeft = new CoOrd(elbowLeftX, elbowLeftY, elbowLeftZ);
+                        CoOrd coElbowLeft = new CoOrd(elbowLeftX, elbowLeftY, elbowLeftZ, elbowLeft.JointType, elbowLeft.TrackingState);
 
 
                         //WristLeft
@@ -240,7 +322,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawWristLeft, wristLeftY - drawWristLeft.Height / 2);
                         //canvas.Children.Add(drawWristLeft);
 
-                        CoOrd coWristLeft = new CoOrd(wristLeftX, wristLeftY, wristLeftZ);
+                        CoOrd coWristLeft = new CoOrd(wristLeftX, wristLeftY, wristLeftZ, wristLeft.JointType, wristLeft.TrackingState);
 
                         //RightShoulder
 
@@ -261,7 +343,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawRightShoulder, rightShoulderY - drawRightShoulder.Height / 2);
                         //canvas.Children.Add(drawRightShoulder);
 
-                        CoOrd coRightShoulder = new CoOrd(rightShoulderX, rightShoulderY, rightShoulderZ);
+                        CoOrd coRightShoulder = new CoOrd(rightShoulderX, rightShoulderY, rightShoulderZ, rightShoulder.JointType, rightShoulder.TrackingState);
 
                         //ElbowRight
 
@@ -282,7 +364,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawElbowRight, elbowRightY - drawElbowRight.Height / 2);
                         //canvas.Children.Add(drawElbowRight);
 
-                        CoOrd coElbowRight = new CoOrd(elbowRightX, elbowRightY, elbowRightZ);
+                        CoOrd coElbowRight = new CoOrd(elbowRightX, elbowRightY, elbowRightZ, elbowRight.JointType, elbowRight.TrackingState);
 
                         //WristRight
 
@@ -303,7 +385,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawWristRight, wristRightY - drawWristRight.Height / 2);
                         //canvas.Children.Add(drawWristRight);
 
-                        CoOrd coWristRight = new CoOrd(wristRightX, wristRightY, wristRightZ);
+                        CoOrd coWristRight = new CoOrd(wristRightX, wristRightY, wristRightZ, wristRight.JointType, wristRight.TrackingState);
 
                         //SpineBase
 
@@ -324,7 +406,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawSpineBase, spineBaseY - drawSpineBase.Height / 2);
                         //canvas.Children.Add(drawSpineBase);
 
-                        CoOrd coSpineBase = new CoOrd(spineBaseX, spineBaseY, spineBaseZ);
+                        CoOrd coSpineBase = new CoOrd(spineBaseX, spineBaseY, spineBaseZ, spineBase.JointType, spineBase.TrackingState);
 
                         //SpineMid
 
@@ -345,7 +427,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawSpineMid, spineMidY - drawSpineMid.Height / 2);
                         //canvas.Children.Add(drawSpineMid);
 
-                        CoOrd coSpineMid = new CoOrd(spineMidX, spineMidY, spineMidZ);
+                        CoOrd coSpineMid = new CoOrd(spineMidX, spineMidY, spineMidZ, spineMid.JointType, spineMid.TrackingState);
 
 
                         //Drawing Skeleton

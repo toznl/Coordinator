@@ -41,12 +41,12 @@ namespace Coordinator
         public float z;
 
         [MarshalAs(UnmanagedType.IUnknown)]
-        public object markerType;
+        public Microsoft.Kinect.JointType markerType;
 
         [MarshalAs(UnmanagedType.IUnknown)]
         public object markerTrackingState;
 
-        public CoOrd(float x1, float y1, float z1, object m1, object m2)
+        public CoOrd(float x1, float y1, float z1, Microsoft.Kinect.JointType m1, object m2)
         {
             x = x1;
             y = y1;

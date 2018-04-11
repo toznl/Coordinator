@@ -102,7 +102,7 @@ namespace Coordinator
             {
                 Socket sender = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 11000);
+                IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("192.168.0.41"), 11000);
 
 
                 sender.Connect(ipEndPoint);

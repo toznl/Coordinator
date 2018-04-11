@@ -55,33 +55,6 @@ namespace Coordinator
             markerTrackingState = m2;
 
         }
-
-
-        // Calling this method will return a byte array with the contents
-        // of the struct ready to be sent via the tcp socket.
-        //public byte[] Serialize()
-        //{
-        //    // allocate a byte array for the struct data
-        //    var buffer = new byte[Marshal.SizeOf(typeof(CoOrd))];
-
-        //    // Allocate a GCHandle and get the array pointer
-        //    var gch = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-        //    var pBuffer = gch.AddrOfPinnedObject();
-
-        //    // copy data from struct to array and unpin the gc pointer
-        //    Marshal.StructureToPtr(this, pBuffer, false);
-        //    gch.Free();
-
-        //    return buffer;
-        //}
-
-        //// this method will deserialize a byte array into the struct.
-        //public void Deserialize(ref byte[] data)
-        //{
-        //    var gch = GCHandle.Alloc(data, GCHandleType.Pinned);
-        //    this = (CoOrd)Marshal.PtrToStructure(gch.AddrOfPinnedObject(), typeof(CoOrd));
-        //    gch.Free();
-        //}
     }
 
     public partial class Client : UserControl

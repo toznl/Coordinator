@@ -40,19 +40,23 @@ namespace Coordinator
         [MarshalAs(UnmanagedType.R4)]
         public float z;
 
+        [MarshalAs(UnmanagedType.I4)]
+        public int markerPC;
+
         [MarshalAs(UnmanagedType.IUnknown)]
         public Microsoft.Kinect.JointType markerType;
 
         [MarshalAs(UnmanagedType.IUnknown)]
         public object markerTrackingState;
-
-        public CoOrd(float x1, float y1, float z1, Microsoft.Kinect.JointType m1, object m2)
+                
+        public CoOrd(float x1, float y1, float z1, Microsoft.Kinect.JointType m1, object m2, int mPc)
         {
             x = x1;
             y = y1;
             z = z1;
             markerType = m1;
             markerTrackingState = m2;
+            markerPC = mPc;
 
         }
 

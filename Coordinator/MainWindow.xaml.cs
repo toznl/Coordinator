@@ -102,7 +102,7 @@ namespace Coordinator
             {
                 Socket sender = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 11000);
+                IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("192.168.0.41"), 11000);
 
 
                 sender.Connect(ipEndPoint);
@@ -189,7 +189,7 @@ namespace Coordinator
                             float headY = realJointHead.Y;
                             float headZ = head.Position.Z;
                             
-                            CoOrd coHead = new CoOrd(headX, headY, headZ, head.JointType, head.TrackingState);
+                            CoOrd coHead = new CoOrd(headX, headY, headZ, head.JointType, head.TrackingState, 1);
 
                             byte[] buffer = Serialize(coHead);
                             
@@ -251,7 +251,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawNeck, neckY - drawNeck.Height / 2);
                         //canvas.Children.Add(drawNeck);
 
-                        CoOrd coNeck = new CoOrd(neckX, neckY, neckZ, neck.JointType, neck.TrackingState);
+                        CoOrd coNeck = new CoOrd(neckX, neckY, neckZ, neck.JointType, neck.TrackingState, 1);
                             buffer = Serialize(coNeck);
                             SendBuffer(ref buffer);
 
@@ -274,7 +274,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawLeftShoulder, leftShoulderY - drawLeftShoulder.Height / 2);
                         //canvas.Children.Add(drawLeftShoulder);
 
-                        CoOrd coLeftShoulder = new CoOrd(leftShoulderX, leftShoulderY, leftShoulderZ, leftShoulder.JointType, leftShoulder.TrackingState);
+                        CoOrd coLeftShoulder = new CoOrd(leftShoulderX, leftShoulderY, leftShoulderZ, leftShoulder.JointType, leftShoulder.TrackingState, 1);
 
                             buffer = Serialize(coLeftShoulder);
                             SendBuffer(ref buffer);
@@ -298,7 +298,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawElbowLeft, elbowLeftY - drawElbowLeft.Height / 2);
                         //canvas.Children.Add(drawElbowLeft);
 
-                        CoOrd coElbowLeft = new CoOrd(elbowLeftX, elbowLeftY, elbowLeftZ, elbowLeft.JointType, elbowLeft.TrackingState);
+                        CoOrd coElbowLeft = new CoOrd(elbowLeftX, elbowLeftY, elbowLeftZ, elbowLeft.JointType, elbowLeft.TrackingState, 1);
                             buffer = Serialize(coElbowLeft);
                             SendBuffer(ref buffer);
 
@@ -321,7 +321,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawWristLeft, wristLeftY - drawWristLeft.Height / 2);
                         //canvas.Children.Add(drawWristLeft);
 
-                        CoOrd coWristLeft = new CoOrd(wristLeftX, wristLeftY, wristLeftZ, wristLeft.JointType, wristLeft.TrackingState);
+                        CoOrd coWristLeft = new CoOrd(wristLeftX, wristLeftY, wristLeftZ, wristLeft.JointType, wristLeft.TrackingState, 1);
 
                             buffer = Serialize(coWristLeft);
                             SendBuffer(ref buffer);
@@ -345,7 +345,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawRightShoulder, rightShoulderY - drawRightShoulder.Height / 2);
                         //canvas.Children.Add(drawRightShoulder);
 
-                        CoOrd coRightShoulder = new CoOrd(rightShoulderX, rightShoulderY, rightShoulderZ, rightShoulder.JointType, rightShoulder.TrackingState);
+                        CoOrd coRightShoulder = new CoOrd(rightShoulderX, rightShoulderY, rightShoulderZ, rightShoulder.JointType, rightShoulder.TrackingState, 1);
 
                             buffer = Serialize(coRightShoulder);
                             SendBuffer(ref buffer);
@@ -369,7 +369,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawElbowRight, elbowRightY - drawElbowRight.Height / 2);
                         //canvas.Children.Add(drawElbowRight);
 
-                        CoOrd coElbowRight = new CoOrd(elbowRightX, elbowRightY, elbowRightZ, elbowRight.JointType, elbowRight.TrackingState);
+                        CoOrd coElbowRight = new CoOrd(elbowRightX, elbowRightY, elbowRightZ, elbowRight.JointType, elbowRight.TrackingState, 1);
                             buffer = Serialize(coElbowRight);
                             SendBuffer(ref buffer);
                             //WristRight
@@ -391,7 +391,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawWristRight, wristRightY - drawWristRight.Height / 2);
                         //canvas.Children.Add(drawWristRight);
 
-                        CoOrd coWristRight = new CoOrd(wristRightX, wristRightY, wristRightZ, wristRight.JointType, wristRight.TrackingState);
+                        CoOrd coWristRight = new CoOrd(wristRightX, wristRightY, wristRightZ, wristRight.JointType, wristRight.TrackingState, 1);
 
                             buffer = Serialize(coWristRight);
                             SendBuffer(ref buffer);
@@ -414,7 +414,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawSpineBase, spineBaseY - drawSpineBase.Height / 2);
                         //canvas.Children.Add(drawSpineBase);
 
-                        CoOrd coSpineBase = new CoOrd(spineBaseX, spineBaseY, spineBaseZ, spineBase.JointType, spineBase.TrackingState);
+                        CoOrd coSpineBase = new CoOrd(spineBaseX, spineBaseY, spineBaseZ, spineBase.JointType, spineBase.TrackingState, 1);
                             buffer = Serialize(coSpineBase);
                             SendBuffer(ref buffer);
                             //SpineMid
@@ -436,7 +436,7 @@ namespace Coordinator
                         //Canvas.SetTop(drawSpineMid, spineMidY - drawSpineMid.Height / 2);
                         //canvas.Children.Add(drawSpineMid);
 
-                        CoOrd coSpineMid = new CoOrd(spineMidX, spineMidY, spineMidZ, spineMid.JointType, spineMid.TrackingState);
+                        CoOrd coSpineMid = new CoOrd(spineMidX, spineMidY, spineMidZ, spineMid.JointType, spineMid.TrackingState, 1);
 
                             buffer = Serialize(coSpineMid);
                             SendBuffer(ref buffer);

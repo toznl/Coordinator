@@ -53,7 +53,7 @@ namespace Coordinator
         {
             x = x1;
             y = y1;
-            z = z1 * 100;
+            z = z1;
             markerType = m1;
             markerTrackingState = m2;
             markerPC = mPc;

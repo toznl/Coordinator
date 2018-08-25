@@ -40,7 +40,6 @@ namespace Coordinator
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
 
-
         //Main windows Initialize
         public MainWindow()
         {
@@ -100,17 +99,25 @@ namespace Coordinator
         {
             try
             {
-                Socket sender = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                TcpClient tc = new TcpClient("192.168.0.191", 5000);
+                NetworkStream stream = tc.GetStream();
 
-                IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("172.20.10.9"), 11000);
+                stream.Write(buffer, 0, buffer.Length);
+
+                stream.Close();
+                tc.Close();
+                Console.WriteLine("Finish");
 
 
-                sender.Connect(ipEndPoint);
-                Console.WriteLine("SendBuffer to {0}", sender.RemoteEndPoint.ToString());
+                //Socket sender = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                //IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("192.168.0.191"), 9090);
+                //sender.Connect(ipEndPoint);
 
-                sender.Send(buffer);
-                sender.Dispose();
-                sender.Close();
+                //Console.WriteLine("SendBuffer to {0}", sender.RemoteEndPoint.ToString());
+
+                //sender.Send(buffer);
+                //sender.Dispose();
+                //sender.Close();
 
                 //System.Threading.Thread.Sleep(1000);
 
@@ -120,7 +127,7 @@ namespace Coordinator
                 Console.WriteLine("Exception:{0}", e.ToString());
             }
         }
-
+         
 
         public byte[] Serialize(object param)
         {
@@ -169,10 +176,8 @@ namespace Coordinator
 
             if (frame != null)
             {
-
                 canvas.Children.Clear();
                 bodies = new Body[frame.BodyFrameSource.BodyCount];
-
                 frame.GetAndRefreshBodyData(bodies);
 
                 foreach (var body in bodies)
@@ -182,7 +187,6 @@ namespace Coordinator
                         if (body.IsTracked)
                         {
                             //Head
-
                             Joint head = body.Joints[JointType.Head];
                             DepthSpacePoint realJointHead = sensor.CoordinateMapper.MapCameraPointToDepthSpace(head.Position);
                             float headX = realJointHead.X;
@@ -190,370 +194,107 @@ namespace Coordinator
                             float headZ = head.Position.Z;
 
                             CoOrd coHead = new CoOrd(headX, headY, headZ, head.JointType, head.TrackingState, 1);
-
                             byte[] buffer = Serialize(coHead);
-
-                            //send buffer to server
                             SendBuffer(ref buffer);
 
-                            //int buffer = 1;
-                            //CoOrd coHeadDeS = new CoOrd();
-                            //coHeadDeS = Deserialize<CoOrd>(buffer);
-                            //Console.WriteLine(coHeadDeS.x);
-                            //Testing Things
-
-                            //coHeadDeS.Deserialize(ref buffer);
-                            //float headXt = coHeadDeS.x;
-                            //float headYt = coHeadDeS.y;
-                            //float headZt = coHeadDeS.z;
-                            //Object headMt = coHeadDeS.m;
-                            //string marker = headMt.ToString();
-                            //if(head.TrackingState == TrackingState.Inferred)
-                            //{
-                            //    System.Console.WriteLine("Infferred");
-                            //}
-
-
-                            //if (marker == "Head")
-                            //{
-                            //    System.Console.WriteLine(headMt);
-                            //}
-
-
-                            
-
-
                             //Neck
-
                             Joint neck = body.Joints[JointType.Neck];
                             DepthSpacePoint realJointNeck = sensor.CoordinateMapper.MapCameraPointToDepthSpace(neck.Position);
                             float neckX = realJointNeck.X;
                             float neckY = realJointNeck.Y;
                             float neckZ = neck.Position.Z;
 
-                            
-
                             CoOrd coNeck = new CoOrd(neckX, neckY, neckZ, neck.JointType, neck.TrackingState, 1);
                             buffer = Serialize(coNeck);
                             SendBuffer(ref buffer);
 
                             //LeftShoulder
-
                             Joint leftShoulder = body.Joints[JointType.ShoulderLeft];
                             DepthSpacePoint realJointLeftShoulder = sensor.CoordinateMapper.MapCameraPointToDepthSpace(leftShoulder.Position);
                             float leftShoulderX = realJointLeftShoulder.X;
                             float leftShoulderY = realJointLeftShoulder.Y;
                             float leftShoulderZ = leftShoulder.Position.Z;
 
-                            
-
                             CoOrd coLeftShoulder = new CoOrd(leftShoulderX, leftShoulderY, leftShoulderZ, leftShoulder.JointType, leftShoulder.TrackingState, 1);
-
                             buffer = Serialize(coLeftShoulder);
                             SendBuffer(ref buffer);
 
                             //ElbowLeft
-
                             Joint elbowLeft = body.Joints[JointType.ElbowLeft];
                             DepthSpacePoint realJointElbowLeft = sensor.CoordinateMapper.MapCameraPointToDepthSpace(elbowLeft.Position);
                             float elbowLeftX = realJointElbowLeft.X;
                             float elbowLeftY = realJointElbowLeft.Y;
                             float elbowLeftZ = elbowLeft.Position.Z;
 
-                            
-
                             CoOrd coElbowLeft = new CoOrd(elbowLeftX, elbowLeftY, elbowLeftZ, elbowLeft.JointType, elbowLeft.TrackingState, 1);
                             buffer = Serialize(coElbowLeft);
                             SendBuffer(ref buffer);
 
                             //WristLeft
-
                             Joint wristLeft = body.Joints[JointType.WristLeft];
                             DepthSpacePoint realJointWristLeft = sensor.CoordinateMapper.MapCameraPointToDepthSpace(wristLeft.Position);
                             float wristLeftX = realJointWristLeft.X;
                             float wristLeftY = realJointWristLeft.Y;
                             float wristLeftZ = wristLeft.Position.Z;
 
-                            
-
                             CoOrd coWristLeft = new CoOrd(wristLeftX, wristLeftY, wristLeftZ, wristLeft.JointType, wristLeft.TrackingState, 1);
-
                             buffer = Serialize(coWristLeft);
                             SendBuffer(ref buffer);
 
                             //RightShoulder
-
                             Joint rightShoulder = body.Joints[JointType.ShoulderRight];
                             DepthSpacePoint realJointRightShoulder = sensor.CoordinateMapper.MapCameraPointToDepthSpace(rightShoulder.Position);
                             float rightShoulderX = realJointRightShoulder.X;
                             float rightShoulderY = realJointRightShoulder.Y;
                             float rightShoulderZ = rightShoulder.Position.Z;
 
-                           
-
                             CoOrd coRightShoulder = new CoOrd(rightShoulderX, rightShoulderY, rightShoulderZ, rightShoulder.JointType, rightShoulder.TrackingState, 1);
-
                             buffer = Serialize(coRightShoulder);
                             SendBuffer(ref buffer);
 
                             //ElbowRight
-
                             Joint elbowRight = body.Joints[JointType.ElbowRight];
                             DepthSpacePoint realJointElbowRight = sensor.CoordinateMapper.MapCameraPointToDepthSpace(elbowRight.Position);
                             float elbowRightX = realJointElbowRight.X;
                             float elbowRightY = realJointElbowRight.Y;
                             float elbowRightZ = elbowRight.Position.Z;
 
-                           
-
                             CoOrd coElbowRight = new CoOrd(elbowRightX, elbowRightY, elbowRightZ, elbowRight.JointType, elbowRight.TrackingState, 1);
                             buffer = Serialize(coElbowRight);
                             SendBuffer(ref buffer);
+                            
                             //WristRight
-
                             Joint wristRight = body.Joints[JointType.WristRight];
                             DepthSpacePoint realJointWristRight = sensor.CoordinateMapper.MapCameraPointToDepthSpace(wristRight.Position);
                             float wristRightX = realJointWristRight.X;
                             float wristRightY = realJointWristRight.Y;
                             float wristRightZ = wristRight.Position.Z;
 
-                            
-
                             CoOrd coWristRight = new CoOrd(wristRightX, wristRightY, wristRightZ, wristRight.JointType, wristRight.TrackingState, 1);
-
                             buffer = Serialize(coWristRight);
                             SendBuffer(ref buffer);
+                            
                             //SpineBase
-
                             Joint spineBase = body.Joints[JointType.SpineBase];
                             DepthSpacePoint realJointSpineBase = sensor.CoordinateMapper.MapCameraPointToDepthSpace(spineBase.Position);
                             float spineBaseX = realJointSpineBase.X;
                             float spineBaseY = realJointSpineBase.Y;
                             float spineBaseZ = spineBase.Position.Z;
 
-                            
-
                             CoOrd coSpineBase = new CoOrd(spineBaseX, spineBaseY, spineBaseZ, spineBase.JointType, spineBase.TrackingState, 1);
                             buffer = Serialize(coSpineBase);
                             SendBuffer(ref buffer);
+                            
                             //SpineMid
-
                             Joint spineMid = body.Joints[JointType.SpineMid];
                             DepthSpacePoint realJointSpineMid = sensor.CoordinateMapper.MapCameraPointToDepthSpace(spineMid.Position);
                             float spineMidX = realJointSpineMid.X;
                             float spineMidY = realJointSpineMid.Y;
                             float spineMidZ = spineMid.Position.Z;
 
-                            
-
                             CoOrd coSpineMid = new CoOrd(spineMidX, spineMidY, spineMidZ, spineMid.JointType, spineMid.TrackingState, 1);
-
                             buffer = Serialize(coSpineMid);
                             SendBuffer(ref buffer);
-                            Ellipse drawHead = new Ellipse
-                            {
-                                Fill = Brushes.Red,
-                                Width = 20,
-                                Height = 20
-                            };
-
-                            //Canvas.SetLeft(drawHead, headX - drawHead.Width / 2);
-                            //Canvas.SetTop(drawHead, headY - drawHead.Height / 2);
-                            //canvas.Children.Add(drawHead);
-
-                            //Ellipse drawNeck = new Ellipse
-                            //{
-                            //    Fill = Brushes.Orange,
-                            //    Width = 20,
-                            //    Height = 20
-                            //};
-
-                            //Canvas.SetLeft(drawNeck, neckX - drawNeck.Width / 2);
-                            //Canvas.SetTop(drawNeck, neckY - drawNeck.Height / 2);
-                            //canvas.Children.Add(drawNeck);
-
-                            //Ellipse drawLeftShoulder = new Ellipse
-                            //{
-                            //    Fill = Brushes.Yellow,
-                            //    Width = 20,
-                            //    Height = 20
-                            //};
-
-                            //Canvas.SetLeft(drawLeftShoulder, leftShoulderX - drawLeftShoulder.Width / 2);
-                            //Canvas.SetTop(drawLeftShoulder, leftShoulderY - drawLeftShoulder.Height / 2);
-                            //canvas.Children.Add(drawLeftShoulder);
-
-                            //Ellipse drawElbowLeft = new Ellipse
-                            //{
-                            //    Fill = Brushes.Yellow,
-                            //    Width = 20,
-                            //    Height = 20
-                            //};
-
-                            //Canvas.SetLeft(drawElbowLeft, elbowLeftX - drawElbowLeft.Width / 2);
-                            //Canvas.SetTop(drawElbowLeft, elbowLeftY - drawElbowLeft.Height / 2);
-                            //canvas.Children.Add(drawElbowLeft);
-
-                            //Ellipse drawWristLeft = new Ellipse
-                            //{
-                            //    Fill = Brushes.Yellow,
-                            //    Width = 20,
-                            //    Height = 20
-                            //};
-
-                            //Canvas.SetLeft(drawWristLeft, wristLeftX - drawWristLeft.Width / 2);
-                            //Canvas.SetTop(drawWristLeft, wristLeftY - drawWristLeft.Height / 2);
-                            //canvas.Children.Add(drawWristLeft);
-
-                            //Ellipse drawRightShoulder = new Ellipse
-                            //{
-                            //    Fill = Brushes.Green,
-                            //    Width = 20,
-                            //    Height = 20
-                            //};
-
-                            //Canvas.SetLeft(drawRightShoulder, rightShoulderX - drawRightShoulder.Width / 2);
-                            //Canvas.SetTop(drawRightShoulder, rightShoulderY - drawRightShoulder.Height / 2);
-                            //canvas.Children.Add(drawRightShoulder);
-
-                            //Ellipse drawElbowRight = new Ellipse
-                            //{
-                            //    Fill = Brushes.Green,
-                            //    Width = 20,
-                            //    Height = 20
-                            //};
-
-                            //Canvas.SetLeft(drawElbowRight, elbowRightX - drawElbowRight.Width / 2);
-                            //Canvas.SetTop(drawElbowRight, elbowRightY - drawElbowRight.Height / 2);
-                            //canvas.Children.Add(drawElbowRight);
-
-                            //Ellipse drawWristRight = new Ellipse
-                            //{
-                            //    Fill = Brushes.Green,
-                            //    Width = 20,
-                            //    Height = 20
-                            //};
-
-                            //Canvas.SetLeft(drawWristRight, wristRightX - drawWristRight.Width / 2);
-                            //Canvas.SetTop(drawWristRight, wristRightY - drawWristRight.Height / 2);
-                            //canvas.Children.Add(drawWristRight);
-
-                            //Ellipse drawSpineBase = new Ellipse
-                            //{
-                            //    Fill = Brushes.Orange,
-                            //    Width = 20,
-                            //    Height = 20
-                            //};
-
-                            //Canvas.SetLeft(drawSpineBase, spineBaseX - drawSpineBase.Width / 2);
-                            //Canvas.SetTop(drawSpineBase, spineBaseY - drawSpineBase.Height / 2);
-                            //canvas.Children.Add(drawSpineBase);
-
-                            //Ellipse drawSpineMid = new Ellipse
-                            //{
-                            //    Fill = Brushes.Orange,
-                            //    Width = 20,
-                            //    Height = 20
-                            //};
-
-                            //Canvas.SetLeft(drawSpineMid, spineMidX - drawSpineMid.Width / 2);
-                            //Canvas.SetTop(drawSpineMid, spineMidY - drawSpineMid.Height / 2);
-                            //canvas.Children.Add(drawSpineMid);
-
-                            ////Drawing Skeleton
-                            ////Head to Neck
-                            //Line lineHeadToNeck = new Line();
-                            //lineHeadToNeck.Stroke = Brushes.LightSteelBlue;
-                            //lineHeadToNeck.X1 = headX;
-                            //lineHeadToNeck.Y1 = headY;
-                            //lineHeadToNeck.X2 = neckX;
-                            //lineHeadToNeck.Y2 = neckY;
-                            //lineHeadToNeck.StrokeThickness = 2;
-
-                            ////Neck to LeftShoulder
-                            //Line lineNeckToLeftShoulder = new Line();
-                            //lineNeckToLeftShoulder.Stroke = Brushes.LightSteelBlue;
-                            //lineNeckToLeftShoulder.X1 = leftShoulderX;
-                            //lineNeckToLeftShoulder.Y1 = leftShoulderY;
-                            //lineNeckToLeftShoulder.X2 = neckX;
-                            //lineNeckToLeftShoulder.Y2 = neckY;
-                            //lineNeckToLeftShoulder.StrokeThickness = 2;
-
-                            ////LeftShoulder to LeftElbow
-                            //Line lineLeftShoulderToElbowLeft = new Line();
-                            //lineLeftShoulderToElbowLeft.Stroke = Brushes.LightSteelBlue;
-                            //lineLeftShoulderToElbowLeft.X1 = leftShoulderX;
-                            //lineLeftShoulderToElbowLeft.Y1 = leftShoulderY;
-                            //lineLeftShoulderToElbowLeft.X2 = elbowLeftX;
-                            //lineLeftShoulderToElbowLeft.Y2 = elbowLeftY;
-                            //lineLeftShoulderToElbowLeft.StrokeThickness = 2;
-
-                            ////LeftElbow to LeftWrist
-                            //Line lineElbowLeftToWristLeft = new Line();
-                            //lineElbowLeftToWristLeft.Stroke = Brushes.LightSteelBlue;
-                            //lineElbowLeftToWristLeft.X1 = elbowLeftX;
-                            //lineElbowLeftToWristLeft.Y1 = elbowLeftY;
-                            //lineElbowLeftToWristLeft.X2 = wristLeftX;
-                            //lineElbowLeftToWristLeft.Y2 = wristLeftY;
-                            //lineElbowLeftToWristLeft.StrokeThickness = 2;
-
-                            ////Neck to RightShoulder
-                            //Line lineNeckToRightShoulder = new Line();
-                            //lineNeckToRightShoulder.Stroke = Brushes.LightSteelBlue;
-                            //lineNeckToRightShoulder.X1 = rightShoulderX;
-                            //lineNeckToRightShoulder.Y1 = rightShoulderY;
-                            //lineNeckToRightShoulder.X2 = neckX;
-                            //lineNeckToRightShoulder.Y2 = neckY;
-                            //lineNeckToRightShoulder.StrokeThickness = 2;
-
-                            ////RightShoulder to RightElbow
-                            //Line lineRightShoulderToElbowRight = new Line();
-                            //lineRightShoulderToElbowRight.Stroke = Brushes.LightSteelBlue;
-                            //lineRightShoulderToElbowRight.X1 = rightShoulderX;
-                            //lineRightShoulderToElbowRight.Y1 = rightShoulderY;
-                            //lineRightShoulderToElbowRight.X2 = elbowRightX;
-                            //lineRightShoulderToElbowRight.Y2 = elbowRightY;
-                            //lineRightShoulderToElbowRight.StrokeThickness = 2;
-
-                            ////RightElbow to RightWrist
-                            //Line lineElbowRightToWristRight = new Line();
-                            //lineElbowRightToWristRight.Stroke = Brushes.LightSteelBlue;
-                            //lineElbowRightToWristRight.X1 = elbowRightX;
-                            //lineElbowRightToWristRight.Y1 = elbowRightY;
-                            //lineElbowRightToWristRight.X2 = wristRightX;
-                            //lineElbowRightToWristRight.Y2 = wristRightY;
-                            //lineElbowRightToWristRight.StrokeThickness = 2;
-
-                            ////Neck to SpineMid
-                            //Line lineNeckToSpineMid = new Line();
-                            //lineNeckToSpineMid.Stroke = Brushes.LightSteelBlue;
-                            //lineNeckToSpineMid.X1 = neckX;
-                            //lineNeckToSpineMid.Y1 = neckY;
-                            //lineNeckToSpineMid.X2 = spineMidX;
-                            //lineNeckToSpineMid.Y2 = spineMidY;
-                            //lineNeckToSpineMid.StrokeThickness = 2;
-
-                            ////SpineMid to SpineBase
-                            //Line lineSpineMidToSpineBase = new Line();
-                            //lineSpineMidToSpineBase.Stroke = Brushes.LightSteelBlue;
-                            //lineSpineMidToSpineBase.X1 = spineMidX;
-                            //lineSpineMidToSpineBase.Y1 = spineMidY;
-                            //lineSpineMidToSpineBase.X2 = spineBaseX;
-                            //lineSpineMidToSpineBase.Y2 = spineBaseY;
-                            //lineSpineMidToSpineBase.StrokeThickness = 2;
-
-
-                            //canvas.Children.Add(lineHeadToNeck);
-                            //canvas.Children.Add(lineNeckToLeftShoulder);
-                            //canvas.Children.Add(lineNeckToRightShoulder);
-                            //canvas.Children.Add(lineLeftShoulderToElbowLeft);
-                            //canvas.Children.Add(lineRightShoulderToElbowRight);
-                            //canvas.Children.Add(lineElbowRightToWristRight);
-                            //canvas.Children.Add(lineElbowLeftToWristLeft);
-                            //canvas.Children.Add(lineNeckToSpineMid);
-                            //canvas.Children.Add(lineSpineMidToSpineBase);
-
-
                         }
                     }
                 }

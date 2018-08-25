@@ -27,11 +27,12 @@ using System.Security.Cryptography;
 
 namespace Coordinator
 {
+    //Main structure of joints with serializable
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     [Serializable]
     public struct CoOrd
     {
-        [MarshalAs(UnmanagedType.R4)]
+        [MarshalAs(UnmanagedType.R4)]   
         public float x;
 
         [MarshalAs(UnmanagedType.R4)]

@@ -24,15 +24,58 @@ using System.Runtime.Serialization;
 using System.IO;
 using System.Security.Cryptography;
 
+namespace CooOrdStructure
 
-namespace Coordinator
 {
     //Main structure of joints with serializable
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     [Serializable]
+    //Theta and Translation Valiables for Error function and initialized
+    public struct ErrorVar
+    {
+        public double thetaX;
+        public double thetaY;
+        public double thetaZ;
+
+        public double transX;
+        public double transY;
+        public double transZ;
+
+
+
+        public ErrorVar(double x1, double y1, double z1, double x2, double y2, double z2)
+        {
+            thetaX = x1;
+            thetaY = y1;
+            thetaZ = z1;
+
+            transX = x2;
+            transY = y2;
+            transZ = z2;
+
+        }
+    }
+
+    public struct CoOrdXYZ
+    {
+        public float x;
+        public float y;
+        public float z;
+
+        public CoOrdXYZ(float x1, float y1, float z1)
+        {
+            x = x1;
+            y = y1;
+            z = z1;
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    [Serializable]
     public struct CoOrd
     {
-        [MarshalAs(UnmanagedType.R4)]   
+
+        [MarshalAs(UnmanagedType.R4)]
         public float x;
 
         [MarshalAs(UnmanagedType.R4)]
@@ -59,23 +102,6 @@ namespace Coordinator
             markerTrackingState = m2;
             markerPC = mPc;
 
-        }
-    }
-
-    public partial class Client : UserControl
-    {
-        private Grid root;
-
-        ////For using console windows
-        //[DllImport("kernel32.dll", SetLastError = true)]
-        //[return: MarshalAs(UnmanagedType.Bool)]
-        //static extern bool AllocConsole();
-
-        //bool flag = true;
-        public Client(Grid root)
-        {
-            InitializeComponent();
-            this.root = root;
         }
     }
 }

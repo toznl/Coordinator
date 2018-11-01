@@ -107,20 +107,6 @@ namespace Coordinator
                 stream.Close();
                 tc.Close();
                 Console.WriteLine("Finish");
-
-
-                //Socket sender = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                //IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("192.168.0.191"), 9090);
-                //sender.Connect(ipEndPoint);
-
-                //Console.WriteLine("SendBuffer to {0}", sender.RemoteEndPoint.ToString());
-
-                //sender.Send(buffer);
-                //sender.Dispose();
-                //sender.Close();
-
-                //System.Threading.Thread.Sleep(1000);
-
             }
             catch (Exception e)
             {
@@ -296,11 +282,10 @@ namespace Coordinator
                             buffer = Serialize(coSpineMid);
                             //SendBuffer(ref buffer);
 
-                            string savePath = @"c:\test\test.txt";
-                            string textValue;
-                            textValue = System.String.Format("{0}, {1}, {2}, {3}, {4}, {5} \r\n", leftShoulderX, leftShoulderY, leftShoulderZ, rightShoulderX, rightShoulderY, rightShoulderZ);
-
-                            System.IO.File.AppendAllText(savePath, textValue, Encoding.Default);
+                            //string savePath = @"c:\test\test.txt";
+                            //string textValue;
+                            //textValue = System.String.Format("{0}, {1}, {2}, {3}, {4}, {5} \r\n", leftShoulderX, leftShoulderY, leftShoulderZ, rightShoulderX, rightShoulderY, rightShoulderZ);
+                            //System.IO.File.AppendAllText(savePath, textValue, Encoding.Default);
 
 
                         }

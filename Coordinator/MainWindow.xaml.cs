@@ -181,7 +181,7 @@ namespace Coordinator
 
                             CoOrd coHead = new CoOrd(headX, headY, headZ, head.JointType, head.TrackingState, 1);
                             byte[] buffer = Serialize(coHead);
-                            //SendBuffer(ref buffer);
+                            SendBuffer(ref buffer);
 
                             //Neck
                             Joint neck = body.Joints[JointType.Neck];
@@ -192,7 +192,7 @@ namespace Coordinator
 
                             CoOrd coNeck = new CoOrd(neckX, neckY, neckZ, neck.JointType, neck.TrackingState, 1);
                             buffer = Serialize(coNeck);
-                            //SendBuffer(ref buffer);
+                            SendBuffer(ref buffer);
 
                             //LeftShoulder
                             Joint leftShoulder = body.Joints[JointType.ShoulderLeft];
@@ -203,7 +203,7 @@ namespace Coordinator
 
                             CoOrd coLeftShoulder = new CoOrd(leftShoulderX, leftShoulderY, leftShoulderZ, leftShoulder.JointType, leftShoulder.TrackingState, 1);
                             buffer = Serialize(coLeftShoulder);
-                            //SendBuffer(ref buffer);
+                            SendBuffer(ref buffer);
 
                             //ElbowLeft
                             Joint elbowLeft = body.Joints[JointType.ElbowLeft];
@@ -214,7 +214,7 @@ namespace Coordinator
 
                             CoOrd coElbowLeft = new CoOrd(elbowLeftX, elbowLeftY, elbowLeftZ, elbowLeft.JointType, elbowLeft.TrackingState, 1);
                             buffer = Serialize(coElbowLeft);
-                            //SendBuffer(ref buffer);
+                            SendBuffer(ref buffer);
 
                             //WristLeft
                             Joint wristLeft = body.Joints[JointType.WristLeft];
@@ -225,7 +225,7 @@ namespace Coordinator
 
                             CoOrd coWristLeft = new CoOrd(wristLeftX, wristLeftY, wristLeftZ, wristLeft.JointType, wristLeft.TrackingState, 1);
                             buffer = Serialize(coWristLeft);
-                            //SendBuffer(ref buffer);
+                            SendBuffer(ref buffer);
 
                             //RightShoulder
                             Joint rightShoulder = body.Joints[JointType.ShoulderRight];
@@ -236,7 +236,7 @@ namespace Coordinator
 
                             CoOrd coRightShoulder = new CoOrd(rightShoulderX, rightShoulderY, rightShoulderZ, rightShoulder.JointType, rightShoulder.TrackingState, 1);
                             buffer = Serialize(coRightShoulder);
-                            //SendBuffer(ref buffer);
+                            SendBuffer(ref buffer);
 
                             //ElbowRight
                             Joint elbowRight = body.Joints[JointType.ElbowRight];
@@ -247,7 +247,7 @@ namespace Coordinator
 
                             CoOrd coElbowRight = new CoOrd(elbowRightX, elbowRightY, elbowRightZ, elbowRight.JointType, elbowRight.TrackingState, 1);
                             buffer = Serialize(coElbowRight);
-                            //SendBuffer(ref buffer);
+                            SendBuffer(ref buffer);
 
                             //WristRight
                             Joint wristRight = body.Joints[JointType.WristRight];
@@ -258,7 +258,7 @@ namespace Coordinator
 
                             CoOrd coWristRight = new CoOrd(wristRightX, wristRightY, wristRightZ, wristRight.JointType, wristRight.TrackingState, 1);
                             buffer = Serialize(coWristRight);
-                            //SendBuffer(ref buffer);
+                            SendBuffer(ref buffer);
 
                             //SpineBase
                             Joint spineBase = body.Joints[JointType.SpineBase];
@@ -269,7 +269,7 @@ namespace Coordinator
 
                             CoOrd coSpineBase = new CoOrd(spineBaseX, spineBaseY, spineBaseZ, spineBase.JointType, spineBase.TrackingState, 1);
                             buffer = Serialize(coSpineBase);
-                            //SendBuffer(ref buffer);
+                            SendBuffer(ref buffer);
 
                             //SpineMid
                             Joint spineMid = body.Joints[JointType.SpineMid];
@@ -280,13 +280,7 @@ namespace Coordinator
 
                             CoOrd coSpineMid = new CoOrd(spineMidX, spineMidY, spineMidZ, spineMid.JointType, spineMid.TrackingState, 1);
                             buffer = Serialize(coSpineMid);
-                            //SendBuffer(ref buffer);
-
-                            //string savePath = @"c:\test\test.txt";
-                            //string textValue;
-                            //textValue = System.String.Format("{0}, {1}, {2}, {3}, {4}, {5} \r\n", leftShoulderX, leftShoulderY, leftShoulderZ, rightShoulderX, rightShoulderY, rightShoulderZ);
-                            //System.IO.File.AppendAllText(savePath, textValue, Encoding.Default);
-
+                            SendBuffer(ref buffer);
 
                         }
                     }
